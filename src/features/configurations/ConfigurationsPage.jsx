@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { 
-  fetchConfigurations, 
-  saveConfigurations, 
-  updateThreshold, 
-  resetThresholds 
-} from '../../store/slices/configurationsSlice';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchConfigurations,
+  saveConfigurations,
+  updateThreshold,
+  resetThresholds,
+} from "../../store/slices/configurationsSlice";
 import {
   Box,
   Typography,
@@ -22,7 +22,7 @@ import {
   CardContent,
   InputAdornment,
   CircularProgress,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Settings,
   Save,
@@ -33,32 +33,43 @@ import {
   CalendarMonth,
   Badge,
   Translate,
-} from '@mui/icons-material';
+} from "@mui/icons-material";
 
-const ThresholdSlider = ({ label, value, onChange, icon: Icon, description, disabled }) => {
+/**
+ * Reusable threshold slider component
+ */
+const ThresholdSlider = ({
+  label,
+  value,
+  onChange,
+  icon: Icon,
+  description,
+  disabled,
+}) => {
   const theme = useTheme();
-  
+
   return (
-    <Card 
-      elevation={0} 
-      sx={{ 
-        mb: 3, 
-        border: '1px solid', 
-        borderColor: 'divider',
+    <Card
+      elevation={0}
+      sx={{
+        mb: 3,
+        border: "1px solid",
+        borderColor: "divider",
         borderRadius: 2,
         opacity: disabled ? 0.7 : 1,
       }}
     >
       <CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        {/* Title + Icon */}
+        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
           <Box
             sx={{
               backgroundColor: `${theme.palette.primary.main}14`,
-              borderRadius: '12px',
+              borderRadius: "12px",
               p: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               mr: 2,
             }}
           >
@@ -68,18 +79,20 @@ const ThresholdSlider = ({ label, value, onChange, icon: Icon, description, disa
             {label}
           </Typography>
         </Box>
-        
+
+        {/* Description */}
         {description && (
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             {description}
           </Typography>
         )}
-        
+
+        {/* Slider + Numeric Input */}
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={8} sm={9}>
             <Slider
               value={value}
-              onChange={(e, newValue) => onChange(newValue)}
+              onChange={(_, newValue) => onChange(newValue)}
               aria-labelledby={`${label}-slider`}
               valueLabelDisplay="auto"
               step={1}
@@ -88,7 +101,7 @@ const ThresholdSlider = ({ label, value, onChange, icon: Icon, description, disa
               disabled={disabled}
               sx={{
                 color: theme.palette.primary.main,
-                '& .MuiSlider-thumb': {
+                "& .MuiSlider-thumb": {
                   width: 16,
                   height: 16,
                 },
@@ -105,12 +118,14 @@ const ThresholdSlider = ({ label, value, onChange, icon: Icon, description, disa
                 }
               }}
               InputProps={{
-                endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                endAdornment: (
+                  <InputAdornment position="end">%</InputAdornment>
+                ),
               }}
               inputProps={{
                 min: 0,
                 max: 100,
-                type: 'number',
+                type: "number",
               }}
               variant="outlined"
               size="small"
@@ -124,46 +139,44 @@ const ThresholdSlider = ({ label, value, onChange, icon: Icon, description, disa
   );
 };
 
-const Configurations = () => {
+const ConfigurationsPage = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const { 
-    thresholds, 
-    status, 
-    saveStatus, 
-    error, 
-    hasChanges 
-  } = useSelector(state => state.configurations);
+  const { thresholds, status, saveStatus, error, hasChanges } = useSelector(
+    (state) => state.configurations
+  );
+
   const [snackbar, setSnackbar] = React.useState({
     open: false,
-    message: '',
-    severity: 'success',
+    message: "",
+    severity: "success",
   });
 
+  // 🔄 Fetch initial configurations
   useEffect(() => {
-    // Fetch configurations when component mounts
-    if (status === 'idle') {
+    if (status === "idle") {
       dispatch(fetchConfigurations());
     }
   }, [dispatch, status]);
 
-  // Show snackbar when save is successful
+  // ✅ Show snackbar on save result
   useEffect(() => {
-    if (saveStatus === 'succeeded') {
+    if (saveStatus === "succeeded") {
       setSnackbar({
         open: true,
-        message: 'Threshold configurations saved successfully!',
-        severity: 'success',
+        message: "Threshold configurations saved successfully!",
+        severity: "success",
       });
-    } else if (saveStatus === 'failed') {
+    } else if (saveStatus === "failed") {
       setSnackbar({
         open: true,
-        message: 'Failed to save configurations. Please try again.',
-        severity: 'error',
+        message: "Failed to save configurations. Please try again.",
+        severity: "error",
       });
     }
   }, [saveStatus]);
 
+  // 🧭 Handlers
   const handleThresholdChange = (key, value) => {
     dispatch(updateThreshold({ name: key, value }));
   };
@@ -176,46 +189,46 @@ const Configurations = () => {
     dispatch(resetThresholds());
     setSnackbar({
       open: true,
-      message: 'Threshold configurations reset to default values.',
-      severity: 'info',
+      message: "Threshold configurations reset to default values.",
+      severity: "info",
     });
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbar({
-      ...snackbar,
-      open: false,
-    });
-  };
+  const handleCloseSnackbar = () =>
+    setSnackbar((prev) => ({ ...prev, open: false }));
 
-  // Show loading state
-  if (status === 'loading' && Object.keys(thresholds).length === 0) {
+  const isLoading = status === "loading" || saveStatus === "loading";
+
+  // 🌀 Loading UI
+  if (status === "loading" && Object.keys(thresholds).length === 0) {
     return (
-      <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'column',
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        height: '50vh' 
-      }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "50vh",
+        }}
+      >
         <CircularProgress size={50} />
-        <Typography variant="h6" sx={{ mt: 2, color: 'text.secondary' }}>
+        <Typography variant="h6" sx={{ mt: 2, color: "text.secondary" }}>
           Loading configurations...
         </Typography>
       </Box>
     );
   }
 
-  // Show error state
-  if (status === 'failed' && error) {
+  // ❌ Error UI
+  if (status === "failed" && error) {
     return (
       <Box sx={{ p: 3 }}>
-        <Alert 
-          severity="error" 
+        <Alert
+          severity="error"
           sx={{ mb: 3 }}
           action={
-            <Button 
-              color="inherit" 
+            <Button
+              color="inherit"
               size="small"
               onClick={() => dispatch(fetchConfigurations())}
             >
@@ -229,119 +242,119 @@ const Configurations = () => {
     );
   }
 
-  const isLoading = status === 'loading' || saveStatus === 'loading';
-
+  // 🧩 Main Content
   return (
     <Box sx={{ py: { xs: 2, sm: 3 } }}>
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        mb: { xs: 2, sm: 3 },
-      }}>
+      {/* Header */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: { xs: 2, sm: 3 },
+        }}
+      >
         <Typography
           variant="h5"
           sx={{
             fontWeight: 600,
             color: theme.palette.primary.main,
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             gap: 1,
           }}
         >
           <Settings />
           Matching Threshold Configurations
         </Typography>
-        
         {isLoading && <CircularProgress size={24} color="primary" />}
       </Box>
 
+      {/* Config Panel */}
       <Paper
         elevation={0}
         sx={{
           p: { xs: 2, sm: 3 },
           mb: 3,
           borderRadius: 2,
-          border: '1px solid',
-          borderColor: 'divider',
+          border: "1px solid",
+          borderColor: "divider",
         }}
       >
         <Typography variant="body1" paragraph>
-          Configure the minimum threshold percentage required for various matching criteria. These thresholds determine when a match is considered valid during the verification process.
+          Configure the minimum threshold percentage required for various
+          matching criteria. These thresholds determine when a match is
+          considered valid during the verification process.
         </Typography>
-        
+
         <Alert severity="info" sx={{ mb: 3 }}>
-          Setting thresholds too high may increase false negatives (legitimate users being rejected). Setting them too low may increase false positives (unauthorized access).
+          Setting thresholds too high may increase false negatives (legitimate
+          users being rejected). Setting them too low may increase false
+          positives (unauthorized access).
         </Alert>
 
+        {/* Threshold Controls */}
         <Box sx={{ mb: 4 }}>
           <ThresholdSlider
             label="EC to Face Match"
             value={thresholds.ecToFaceMatch || 0}
-            onChange={(value) => handleThresholdChange('ecToFaceMatch', value)}
+            onChange={(v) => handleThresholdChange("ecToFaceMatch", v)}
             icon={Face}
             description="Minimum similarity required between EC photo and user's face"
             disabled={isLoading}
           />
-          
           <ThresholdSlider
             label="ID to Face Match"
             value={thresholds.idToFaceMatch || 0}
-            onChange={(value) => handleThresholdChange('idToFaceMatch', value)}
+            onChange={(v) => handleThresholdChange("idToFaceMatch", v)}
             icon={CompareArrows}
             description="Minimum similarity required between ID photo and user's face"
             disabled={isLoading}
           />
-          
           <ThresholdSlider
             label="Father Name Matching"
             value={thresholds.fatherNameMatching || 0}
-            onChange={(value) => handleThresholdChange('fatherNameMatching', value)}
+            onChange={(v) => handleThresholdChange("fatherNameMatching", v)}
             icon={Person}
             description="Minimum similarity required for father's name verification"
             disabled={isLoading}
           />
-          
           <ThresholdSlider
             label="Mother Name Matching"
             value={thresholds.motherNameMatching || 0}
-            onChange={(value) => handleThresholdChange('motherNameMatching', value)}
+            onChange={(v) => handleThresholdChange("motherNameMatching", v)}
             icon={Person}
             description="Minimum similarity required for mother's name verification"
             disabled={isLoading}
           />
-          
           <ThresholdSlider
             label="Name (Bangla) Matching"
             value={thresholds.nameBanglaMatching || 0}
-            onChange={(value) => handleThresholdChange('nameBanglaMatching', value)}
+            onChange={(v) => handleThresholdChange("nameBanglaMatching", v)}
             icon={Translate}
             description="Minimum similarity required for Bangla name verification"
             disabled={isLoading}
           />
-          
           <ThresholdSlider
             label="Name (English) Matching"
             value={thresholds.nameEnglishMatching || 0}
-            onChange={(value) => handleThresholdChange('nameEnglishMatching', value)}
+            onChange={(v) => handleThresholdChange("nameEnglishMatching", v)}
             icon={Translate}
             description="Minimum similarity required for English name verification"
             disabled={isLoading}
           />
-          
           <ThresholdSlider
             label="Date of Birth Matching"
             value={thresholds.dateOfBirthMatching || 0}
-            onChange={(value) => handleThresholdChange('dateOfBirthMatching', value)}
+            onChange={(v) => handleThresholdChange("dateOfBirthMatching", v)}
             icon={CalendarMonth}
             description="Minimum similarity required for date of birth verification"
             disabled={isLoading}
           />
-          
           <ThresholdSlider
             label="ID Card Matching"
             value={thresholds.idCardMatching || 0}
-            onChange={(value) => handleThresholdChange('idCardMatching', value)}
+            onChange={(v) => handleThresholdChange("idCardMatching", v)}
             icon={Badge}
             description="Minimum similarity required for ID card verification"
             disabled={isLoading}
@@ -350,7 +363,8 @@ const Configurations = () => {
 
         <Divider sx={{ mb: 3 }} />
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        {/* Action Buttons */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
           <Button
             variant="outlined"
             color="primary"
@@ -363,7 +377,13 @@ const Configurations = () => {
           <Button
             variant="contained"
             color="primary"
-            startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <Save />}
+            startIcon={
+              isLoading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                <Save />
+              )
+            }
             onClick={handleSave}
             disabled={isLoading || !hasChanges}
           >
@@ -372,13 +392,18 @@ const Configurations = () => {
         </Box>
       </Paper>
 
+      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
@@ -386,4 +411,4 @@ const Configurations = () => {
   );
 };
 
-export default Configurations;
+export default ConfigurationsPage;

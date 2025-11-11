@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react';  
 import {
   AppBar as MuiAppBar,
   Box,
@@ -15,9 +15,9 @@ import {
   LightMode as LightModeIcon,
   Person as PersonIcon,
 } from '@mui/icons-material';
-import { useThemeMode } from '../../contexts/ThemeContext';
+import { useThemeMode } from '../theme/ThemeContext';
 
-const drawerWidth = 240;
+const drawerWidth = 268;
 
 const AppBar = ({ open, onDrawerToggle }) => {
   const theme = useTheme();
@@ -32,8 +32,8 @@ const AppBar = ({ open, onDrawerToggle }) => {
         width: { sm: `calc(100% - ${open ? drawerWidth : 0}px)` },
         ml: { sm: open ? `${drawerWidth}px` : 0 },
         transition: theme.transitions.create(['margin', 'width'], {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
+        easing: theme.transitions.easing.easeOut,
+        duration: 180, 
         }),
         borderBottom: '1px solid',
         borderColor: 'divider',
@@ -73,7 +73,7 @@ const AppBar = ({ open, onDrawerToggle }) => {
             fontWeight: 600,
           }}
         >
-          {isMobile ? 'Admin Portal' : 'dotKYC Admin Portal'}
+          {isMobile ? 'Admin Portal' : 'eKYC Admin Portal'}
         </Typography>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Tooltip title={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`}>

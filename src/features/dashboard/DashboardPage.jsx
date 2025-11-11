@@ -22,9 +22,9 @@ import {
   AccessTime,
   Refresh as RefreshIcon,
 } from '@mui/icons-material';
-import RequestBarChart from '../dashboard/RequestBarChart';
-import StatusPieChart from '../dashboard/StatusPieChart';
-import ECStatusPieChart from '../dashboard/ECStatusPieChart';
+import RequestBarChart from './components/RequestBarChart';
+import StatusPieChart from './components/StatusPieChart';
+import ECStatusPieChart from './components/ECStatusPieChart'; 
 
 const StatCard = ({ title, value, icon: Icon, color, subtitle }) => {
   const theme = useTheme();
@@ -33,7 +33,7 @@ const StatCard = ({ title, value, icon: Icon, color, subtitle }) => {
     <Paper
       elevation={0}
       sx={{
-        p: { xs: 2, sm: 3 },
+        p: { xs: 3, sm: 3 },
         height: '100%',
         borderRadius: 2,
         border: '1px solid',
@@ -94,7 +94,7 @@ const StatCard = ({ title, value, icon: Icon, color, subtitle }) => {
   );
 };
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { 
@@ -325,4 +325,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

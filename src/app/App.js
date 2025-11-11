@@ -1,13 +1,19 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider as MuiThemeProvider, CssBaseline, Box, useMediaQuery } from '@mui/material';
+import {
+  ThemeProvider as MuiThemeProvider,
+  CssBaseline,
+  Box,
+  useMediaQuery,
+} from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import Sidebar from './components/layout/Sidebar';
-import AppBar from './components/layout/AppBar';
-import Dashboard from './components/pages/Dashboard';
-import RequestList from './components/pages/RequestList';
-import Configurations from './components/pages/Configurations';
-import { useThemeMode } from './contexts/ThemeContext';
+
+import Sidebar from './layout/Sidebar';
+import AppBar from './layout/AppBar';
+import DashboardPage from '../features/dashboard/DashboardPage';
+import RequestListPage from '../features/requestList/RequestListPage';
+import ConfigurationsPage from '../features/configurations/ConfigurationsPage';
+import { useThemeMode } from './theme/ThemeContext';
 
 const drawerWidth = 240;
 
@@ -118,9 +124,9 @@ const App = () => {
         >
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/requests" element={<RequestList />} />
-            <Route path="/configurations" element={<Configurations />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/requests" element={<RequestListPage />} />
+            <Route path="/configurations" element={<ConfigurationsPage />} />
           </Routes>
         </Box>
       </Box>
