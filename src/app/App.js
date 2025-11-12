@@ -119,9 +119,9 @@ const App = () => {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.leavingScreen,
             }),
-            //marginLeft: { sm: `${drawerOpen ? drawerWidth : 0}px` },
           }}
         >
+          
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<DashboardPage />} />
