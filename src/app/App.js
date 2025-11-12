@@ -15,7 +15,7 @@ import RequestListPage from '../features/requestList/RequestListPage';
 import ConfigurationsPage from '../features/configurations/ConfigurationsPage';
 import { useThemeMode } from './theme/ThemeContext';
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const App = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
@@ -119,7 +119,7 @@ const App = () => {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.leavingScreen,
             }),
-            marginLeft: { sm: `${drawerOpen ? drawerWidth : 0}px` },
+            //marginLeft: { sm: `${drawerOpen ? drawerWidth : 0}px` },
           }}
         >
           <Routes>

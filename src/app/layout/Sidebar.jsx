@@ -25,8 +25,10 @@ import {
   ChevronRight as ChevronRightIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Typography } from '@mui/material';
 
-const drawerWidth = 268;
+
+const drawerWidth = 250;
 
 const Sidebar = ({ open, onDrawerToggle }) => {
   const theme = useTheme();
@@ -90,30 +92,30 @@ const Sidebar = ({ open, onDrawerToggle }) => {
       }}
     >
       {/* Header + Logo */}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          mt: 1,
-          mb: 2,
-        }}
-      >
-        <Box
-          component="img"
-          src="/eKYC_logo.svg"
-          alt="eKYC Logo"
-          sx={{
-            width: '80px',
-            height: '60px',
-            justifyContent: 'center',
-            pl: 1,
-            filter: 'brightness(0) invert(1)',
-          }}
-        />
-      </Box>
+    <Box
+      sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center', 
+      py: 2,      
+      height: 64,              
+      }}
+    >
+    <Box
+      component="img"
+      src="/eKYC_logo.svg"
+      alt="eKYC Logo"
+      sx={{
+      width: 50,
+      height: 50,
+      objectFit: 'contain',
+      filter: 'brightness(0) invert(1)',
+    }}
+    />
+    </Box>
 
-      {/* Search Bar */}
+    {/* Search Bar */}
       <Box
         sx={{
           display: 'flex',

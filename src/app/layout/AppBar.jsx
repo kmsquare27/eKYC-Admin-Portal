@@ -17,7 +17,7 @@ import {
 } from '@mui/icons-material';
 import { useThemeMode } from '../theme/ThemeContext';
 
-const drawerWidth = 268;
+const drawerWidth = 250;
 
 const AppBar = ({ open, onDrawerToggle }) => {
   const theme = useTheme();
@@ -54,6 +54,7 @@ const AppBar = ({ open, onDrawerToggle }) => {
           onClick={onDrawerToggle}
           sx={{
             mr: 2,
+            ml: 2,
             color: 'text.secondary',
             '&:hover': {
               backgroundColor: `${theme.palette.primary.main}14`,
@@ -71,6 +72,7 @@ const AppBar = ({ open, onDrawerToggle }) => {
             color: 'text.primary',
             fontSize: { xs: '1rem', sm: '1.25rem' },
             fontWeight: 600,
+            ml: 0.5,
           }}
         >
           {isMobile ? 'Admin Portal' : 'eKYC Admin Portal'}
