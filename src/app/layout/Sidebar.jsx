@@ -26,6 +26,8 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Typography } from '@mui/material';
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/slices/authSlice"; 
 
 
 const drawerWidth = 250;
@@ -35,6 +37,7 @@ const Sidebar = ({ open, onDrawerToggle }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const dispatch = useDispatch();
 
   const menuItems = [
     {
@@ -199,46 +202,50 @@ const Sidebar = ({ open, onDrawerToggle }) => {
 
       {/* Bottom (Logout) Menu */}
       <List sx={{ py: 1 }}>
-        {bottomMenuItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <ListItem key={item.text} disablePadding>
-              <ListItemButton
-                onClick={() => navigate(item.path)}
-                selected={isActive}
-                sx={{
-                  minHeight: 48,
-                  px: 2,
-                  py: 0.8,
-                  borderRadius: '6px',
-                  color: '#fff',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.1)',
-                  },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 40,
-                    color: '#fff',
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  sx={{
-                    '& .MuiListItemText-primary': {
-                      color: '#fff',
-                      fontWeight: isActive ? 600 : 400,
-                    },
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-      </List>
+  {bottomMenuItems.map((item) => {
+    const isActive = location.pathname === item.path;
+
+    return (
+      <ListItem key={item.text} disablePadding>
+        <ListItemButton
+          onClick={() => {
+            dispatch(logout());         // CLEAR auth state
+            navigate("/login");         // REDIRECT to login
+          }}
+          selected={isActive}
+          sx={{
+            minHeight: 48,
+            px: 2,
+            py: 0.8,
+            borderRadius: "6px",
+            color: "#fff",
+            "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 40,
+              color: "#fff",
+            }}
+          >
+            {item.icon}
+          </ListItemIcon>
+
+          <ListItemText
+            primary={item.text}
+            sx={{
+              "& .MuiListItemText-primary": {
+                color: "#fff",
+                fontWeight: isActive ? 600 : 400,
+              },
+            }}
+          />
+        </ListItemButton>
+      </ListItem>
+    );
+  })}
+</List>
+
     </Box>
   );
 
