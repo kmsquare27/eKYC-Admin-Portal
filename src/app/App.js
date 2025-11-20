@@ -1,4 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import LoginPage from "../features/auth/LoginPage";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { Routes, Route, Navigate } from 'react-router-dom';
 import {
   ThemeProvider as MuiThemeProvider,
@@ -14,12 +17,16 @@ import DashboardPage from '../features/dashboard/DashboardPage';
 import RequestListPage from '../features/requestList/RequestListPage';
 import ConfigurationsPage from '../features/configurations/ConfigurationsPage';
 import { useThemeMode } from './theme/ThemeContext';
+import ReportsPage from "../features/reports/ReportsPage";
 
 const drawerWidth = 250;
 
 const App = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
   const { mode } = useThemeMode();
+  const location = useLocation();
+
+  const isAuth = useSelector((state) => state.auth.isAuthenticated);
 
   const theme = useMemo(() => createTheme({
     palette: {
@@ -102,16 +109,28 @@ const App = () => {
     setDrawerOpen(!drawerOpen);
   };
 
-  return (
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
+ return (
+  <MuiThemeProvider theme={theme}>
+    <CssBaseline />
+
+    {/* Detect current route */}
+    {location.pathname.startsWith("/login") ? (
+      // ============================
+      // LOGIN PAGE (NO APPBAR/SIDEBAR)
+      // ============================
+      <LoginPage />
+    ) : (
+      // ============================
+      // AUTHENTICATED LAYOUT
+      // ============================
       <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
         <AppBar open={drawerOpen} onDrawerToggle={handleDrawerToggle} />
         <Sidebar open={drawerOpen} onDrawerToggle={handleDrawerToggle} />
-        <Box 
-          component="main" 
-          sx={{ 
-            flexGrow: 1, 
+
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
             p: { xs: 2, sm: 3 },
             width: { sm: `calc(100% - ${drawerWidth}px)` },
             mt: { xs: 7, sm: 8 },
@@ -121,17 +140,44 @@ const App = () => {
             }),
           }}
         >
-          
           <Routes>
+            {/* DEFAULT */}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/requests" element={<RequestListPage />} />
-            <Route path="/configurations" element={<ConfigurationsPage />} />
+
+            {/* LOGIN ROUTE WITH REDIRECT IF ALREADY AUTH */}
+            <Route
+              path="/login"
+              element={
+                isAuth ? <Navigate to="/dashboard" replace /> : <LoginPage />
+              }
+            />
+
+            {/* PROTECTED ROUTES */}
+            <Route
+              path="/dashboard"
+              element={isAuth ? <DashboardPage /> : <Navigate to="/login" replace />}
+            />
+
+            <Route
+              path="/requests"
+              element={isAuth ? <RequestListPage /> : <Navigate to="/login" replace />}
+            />
+
+            <Route
+              path="/configurations"
+              element={isAuth ? <ConfigurationsPage /> : <Navigate to="/login" replace />}
+            />
+
+            <Route
+              path="/reports"
+              element={isAuth ? <ReportsPage /> : <Navigate to="/login" replace />}
+            />
           </Routes>
         </Box>
       </Box>
-    </MuiThemeProvider>
-  );
-};
+    )}
+  </MuiThemeProvider>
+);
+}
 
 export default App;
