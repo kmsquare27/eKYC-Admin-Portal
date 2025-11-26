@@ -51,7 +51,7 @@ export const renderActions = (row, theme) => (
   <Tooltip title="View Details">
     <IconButton
       size="small"
-      onClick={() => console.log("View details for:", row.id)}
+      onClick={() => row.onView(row)}
       sx={{
         color: theme.palette.primary.main,
         "&:hover": { backgroundColor: `${theme.palette.primary.main}14` },

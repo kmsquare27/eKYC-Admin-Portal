@@ -83,7 +83,7 @@ export default function LoginPage() {
             letterSpacing: "0.5px",
           }}
         >
-          eKYC Admin Login
+          eKYC Admin Portal
         </Typography>
 
         <Typography

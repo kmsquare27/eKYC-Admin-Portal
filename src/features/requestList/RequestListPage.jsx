@@ -7,6 +7,9 @@ import RequestListSearchBar from "./components/RequestListSearchBar";
 import RequestListTable from "./components/RequestListTable";
 import RequestListPagination from "./components/RequestListPagination";
 import { getVisibleColumns } from "./utils/columnsConfig";
+import RequestDetailsModal from "./components/RequestDetailsModal";
+
+
 
 const RequestListPage = () => {
   const theme = useTheme();
@@ -14,6 +17,9 @@ const RequestListPage = () => {
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
   const dispatch = useDispatch();
   const { items: rows, status, error } = useSelector((s) => s.requests);
+
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -63,7 +69,13 @@ const RequestListPage = () => {
       {error && <Alert severity="error">Failed to load requests: {error}</Alert>}
 
       <RequestListTable
-        rows={paginatedRows}
+        rows={paginatedRows.map((r) => ({
+          ...r,
+          onView: () => {
+            setSelectedRow(r);
+            setDetailsOpen(true);
+          },
+        }))}
         visibleColumns={visibleColumns}
         status={status}
         theme={theme}
@@ -76,6 +88,14 @@ const RequestListPage = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      {detailsOpen && selectedRow && (
+      <RequestDetailsModal
+        open={detailsOpen}
+        onClose={() => setDetailsOpen(false)}
+        row={selectedRow}
+      />
+    )}
+
     </Box>
   );
 };
